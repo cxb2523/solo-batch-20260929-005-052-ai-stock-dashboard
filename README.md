@@ -70,6 +70,21 @@ streamlit run stock_dashboard.py
 Navigate to http://localhost:8501
 ```
 
+### Multi-code compare window
+
+Compare several codes in one normalized overlay chart with per-code error rows:
+```bash
+python app.py AAPL MSFT NVDA TSLA     # custom basket
+python app.py                         # default basket
+python app.py --demo                  # offline demo with a gap and a failure
+```
+
+The `compare` package powers it:
+- `compare/data_source.py` - concurrent fetch, max 4 in-flight upstream calls, same-code request coalescing, 300 s TTL cache, exponential backoff, only successful series with >= 30 rows are cached
+- `compare/align.py` - pure functions: trading-day union alignment, forward fill, > 5-day gap detection, first-close normalization (applied after alignment)
+- `compare/analytics.py` - MA20/MA50, RSI, MACD and next-day forecasts per code
+- `compare/charts.py` - overlay + per-row error table, and the legacy `create_advanced_chart(data, symbol)` single-stock figure
+
 ![ML Predictions](screenshots/ml_predictions.jpg)
 
 ## 📦 Dependencies
